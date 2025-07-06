@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Payment Rullkage(Zys)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #eef3f7, #f9fafe);
+      color: #333;
+      padding: 30px;
+    }
+
+    .card {
+      max-width: 600px;
+      background: #fff;
+      margin: auto;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 25px;
+      color: #1f2937;
+    }
+
+    .info {
+      background: #e9f4ff;
+      padding: 12px 18px;
+      border-radius: 12px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+    }
+
+    .info button {
+      background: #007bff;
+      color: #fff;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 0.85rem;
+    }
+
+    .info button:hover {
+      background: #0056d2;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .btn-group button {
+      flex: 1;
+      padding: 10px;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    #qrisBtn { background: #00b894; }
+    #saluranBtn { background: #6366f1; }
+    #logBtn { background: #374151; }
+
+    .btn-group button:hover {
+      opacity: 0.9;
+      transform: scale(1.03);
+    }
+
+    .qris-img {
+      display: none;
+      width: 100%;
+      border-radius: 15px;
+      margin-top: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .download-link {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .download-link button {
+      background: #ff7675;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .runtime {
+      background: #f0faff;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 25px;
+      color: #666;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .log {
+      display: none;
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 25px;
+      font-size: 0.9rem;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 8px #000;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>💸 Website Payment Rullkage(Zys)</h1>
+
+  <div class="info"><span>💸 DANA</span><span id="dana">083892730732 <button onclick="copy('dana')">Salin</button></span></div>
+  <div class="info"><span>🌊 GoPay</span><span id="gopay">083892730732 <button onclick="copy('gopay')">Salin</button></span></div>
+  <div class="info"><span>🌸 OVO</span><span id="ovo">Tidak Tersedia.</span></div>
+
+  <div class="btn-group">
+    <button id="qrisBtn" onclick="toggleQRIS()">📷 Tampilkan QRIS</button>
+    <button id="saluranBtn" onclick="window.open('https://whatsapp.com/channel/0029Vb69nLG23n3aRi3cpf2U', '_blank')">📢 Saluran Hanami</button>
+    <button id="logBtn" onclick="toggleLog()">📄 Show Log Activity</button>
+  </div>
+
+  <img id="qris-img" class="qris-img" src="https://files.catbox.moe/eelyku.jpg" alt="QRIS">
+
+  <a id="downloadBtn" class="download-link" href="https://files.catbox.moe/eelyku.jpg" download="QRIS_FikaBot.jpg">
+    <button>⬇️ Download QRIS</button>
+  </a>
+
+  <div class="runtime" id="datetime">🕒 Memuat waktu...</div>
+  <div class="runtime" id="battery">🔋 Memuat baterai...</div>
+
+  <div class="footer">
+    © Powered by Handi | Website Payment <a href="https://hanami.privhandi.my.id" target="_blank">HanamiCloud</a>
+  </div>
+
+  <div class="log" id="logArea">🔍 Log aktif...</div>
+</div>
+
+<script>
+  const logArea = document.getElementById("logArea");
+
+  function log(msg, tag = "Hanami") {
+    const time = new Date().toLocaleTimeString('id-ID');
+    const line = `<span style="color:lime;">[${time}]</span> <span style="color:cyan;">[${tag}]</span> ${msg}<br>`;
+    logArea.innerHTML += line;
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+
+  function copy(id) {
+    const text = document.getElementById(id).innerText.split(" ")[0];
+    navigator.clipboard.writeText(text).then(() => {
+      log(`✅ Nomor ${id.toUpperCase()} disalin: ${text}`);
+    });
+  }
+
+  function toggleQRIS() {
+    const qris = document.getElementById("qris-img");
+    const btn = document.getElementById("qrisBtn");
+    const download = document.getElementById("downloadBtn");
+
+    if (qris.style.display === "block") {
+      qris.style.display = "none";
+      download.style.display = "none";
+      btn.innerText = "📷 Tampilkan QRIS";
+      log("❌ QRIS disembunyikan");
+    } else {
+      qris.style.display = "block";
+      download.style.display = "block";
+      btn.innerText = "❌ Sembunyikan QRIS";
+      log("📷 QRIS ditampilkan");
+    }
+  }
+
+  function toggleLog() {
+    const logElement = document.getElementById("logArea");
+    if (logElement.style.display === "block") {
+      logElement.style.display = "none";
+      log("📄 Log disembunyikan");
+    } else {
+      logElement.style.display = "block";
+      log("📄 Log ditampilkan");
+    }
+  }
+
+  function updateDateTime() {
+    const now = new Date();
+    document.getElementById("datetime").innerText = `🕒 ${now.toLocaleString('id-ID')}`;
+  }
+
+  function checkBattery() {
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(battery => {
+        const percent = Math.floor(battery.level * 100);
+        const status = battery.charging ? "🔌 Mengisi" : "🔋 Tidak mengisi";
+        document.getElementById("battery").innerText = `🔋 ${percent}% (${status})`;
+        log(`🔋 Baterai: ${percent}% (${status})`);
+      });
+    } else {
+      document.getElementById("battery").innerText = "🔋 Tidak didukung browser.";
+      log("⚠️ Browser tidak mendukung Battery API", "System");
+    }
+  }
+
+  // Auto update setiap 60 detik
+  setInterval(() => {
+    updateDateTime();
+    checkBattery();
+  }, 60000);
+
+  // Load awal
+  updateDateTime();
+  checkBattery();
+</script>
+
+</body>
+</html>
